@@ -1,22 +1,28 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
-blogsRouter.get('/', (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs)
-  })
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
 })
 
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
-
-  blog.save().then((result) => {
-    response.status(201).json(result)
+blogsRouter.post('/', async (request, response) => {
+  const { title, url, ...rest } = request.body
+  if (!title || !url) {
+    return response
+      .status(400)
+      .json({ error: 'Title and URL are required fields' })
+  }
+  const blog = new Blog({
+    title,
+    url,
+    ...rest,
   })
+  const result = await blog.save()
+  response.status(201).json(result)
 })
 
 module.exports = blogsRouter
-
 
 // Explaining the code
 // The blogsRouter is a router object which provides an interface similar to the app object.
