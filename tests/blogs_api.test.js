@@ -95,6 +95,15 @@ test('a blog can be deleted', async () => {
   expect(blogsAtEnd.body).toHaveLength(initialBlogs.length - 1)
 })
 
+test('a blog can be updated', async () => {
+  const blogsAtStart = await api.get('/api/blogs')
+  const blogToUpdate = blogsAtStart.body[0]
+  const updatedBlog = {
+    title: 'Go lang',
+  }
+  await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog).expect(200)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
