@@ -99,7 +99,7 @@ test('a blog can be updated', async () => {
   const blogsAtStart = await api.get('/api/blogs')
   const blogToUpdate = blogsAtStart.body[0]
   const updatedBlog = {
-    title: 'Go lang',
+    likes: 192,
   }
   await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog).expect(200)
 })

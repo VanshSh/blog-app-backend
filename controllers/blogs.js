@@ -34,10 +34,10 @@ blogsRouter.delete('/:id', async (request, response) => {
 // To update the blog
 blogsRouter.put('/:id', async (req, res) => {
   const { id } = req.params
-  const { title, url, ...rest } = req.body
+  const { title, likes, ...rest } = req.body
   const blog = {
     title,
-    url,
+    likes,
     ...rest,
   }
   const update = await Blog.findByIdAndUpdate(id, blog, {
