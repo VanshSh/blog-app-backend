@@ -25,10 +25,8 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 app.use('/api/blogs', blogsRouter)
-
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
-
 module.exports = app
 
 // Explain the above code step by step from the top to the bottom.
