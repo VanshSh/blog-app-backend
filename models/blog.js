@@ -8,12 +8,10 @@ const blogSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  user: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-  ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 })
 
 blogSchema.set('toJSON', {
@@ -26,6 +24,3 @@ blogSchema.set('toJSON', {
 
 const Blog = mongoose.model('Blog', blogSchema)
 module.exports = Blog
-
-// Explain the code
-// The blogSchema is used as a template for creating new documents in the database.

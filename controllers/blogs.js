@@ -1,27 +1,45 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 // To get all the blogs
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', {
+    username: 1,
+    name: 1,
+  })
   return response.json(blogs)
 })
 
 // To add the favrouite blog
 blogsRouter.post('/', async (request, response) => {
-  const { title, url, ...rest } = request.body
+  const { title, url, author, ...rest } = request.body
+
+  // Find the user based on their username
+  const user = await User.findOne({ name: author })
+
+  if (!user) {
+    return response.status(400).json({ error: 'User not found.' })
+  }
+
   if (!title || !url) {
     return response
       .status(400)
-      .json({ error: 'Title and URL are required fields' })
+      .json({ error: 'Title and URL are required fields.' })
   }
+
   const blog = new Blog({
     title,
     url,
+    author: user.name, // Set the author to the user's name
+    user: user._id, // Associate the blog with the user's ObjectId
     ...rest,
   })
-  const result = await blog.save()
-  return response.status(201).json(result)
+
+  const savedBlog = await blog.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
+  return response.status(201).json(savedBlog)
 })
 
 // To delete the blog
